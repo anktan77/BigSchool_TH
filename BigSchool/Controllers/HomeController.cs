@@ -21,23 +21,15 @@ namespace BigSchool.Controllers
 
         public ActionResult Index() {
              
-            ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(User.Identity.GetUserId());
-           
-            if (user == null)
-            {
-
-                return Redirect("Account/Login"); 
-            }
-            else
-            {
-                var upcomingCourse = db.Courses.Where(p => p.DateTime > DateTime.Now && p.IdLecturer==user.Id).OrderBy(p => p.DateTime).ToList();
+    
+                var upcomingCourse = db.Courses.Where(p => p.DateTime > DateTime.Now).OrderBy(p => p.DateTime).ToList();
                 foreach (Course i in upcomingCourse)
                 {
-
-                    i.IdLecturer = user.Name;
+                ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(i.IdLecturer);
+                i.IdLecturer = user.Name;
                 }
                 return View(upcomingCourse);
-            }      
+             
         }
 
     public ActionResult About()
